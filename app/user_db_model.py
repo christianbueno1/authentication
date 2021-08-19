@@ -27,16 +27,7 @@ import sys
 def to_user_lst(list_):
     user_lst = []
     for tuple_ in list_:
-        user_dict = dict(
-            id = tuple_[0],
-            username = tuple_[1],
-            email = tuple_[2],
-            password = tuple_[3],
-            fname = tuple_[4],
-            lname = tuple_[5],
-            dob = tuple_[6]
-        )
-        user_obj = User(**user_dict)
+        user_obj = tpl_to_user_obj(tuple_)
         user_lst.append(user_obj)
     return user_lst
 
@@ -46,6 +37,30 @@ def print_user_lst(user_lst):
     for user_obj in user_lst:
         print(f"{user_obj}")
         print()
+
+def tpl_to_user_obj(user_tpl):
+
+    # user_dict = dict(
+    #     id = tuple_[0],
+    #     username = tuple_[1],
+    #     email = tuple_[2],
+    #     password = tuple_[3],
+    #     fname = tuple_[4],
+    #     lname = tuple_[5],
+    #     dob = tuple_[6]
+    # )
+    # user_obj = User(**user_dict)
+
+    user_obj = User(
+        id=user_tpl[0], 
+        username=user_tpl[1],
+        email=user_tpl[2],
+        password=user_tpl[3],
+        fname=user_tpl[4],
+        lname=user_tpl[5],
+        dob=user_tpl[6]
+    )
+    return user_obj
 
 #retrieve
 #return a list of user class
@@ -97,15 +112,7 @@ def get_user(id):
 
     if not user_tpl:
         return None
-    user_obj = User(
-        id=user_tpl[0], 
-        username=user_tpl[1],
-        email=user_tpl[2],
-        password=user_tpl[3],
-        fname=user_tpl[4],
-        lname=user_tpl[5],
-        dob=user_tpl[6]
-    )
+    user_obj = tpl_to_user_obj(user_tpl)
     return user_obj
 
 #create
@@ -163,3 +170,56 @@ def update_user(id, new_fname, new_lname, new_dob):
     finally:
         cur.close()
         conn.close()
+
+#change username or create username
+#verify availability of username
+#if there is no username return None
+def get_by_username(username):
+    try:
+        conn = get_db1()
+        cur = conn.cursor()
+        query = "select * from account where username=?"
+        cur.execute(query, (username,))
+        user_tpl = cur.fetchone()
+        
+    except mariadb.Error as e:
+        print(f"Error connecting to mariadb platform: {e}")
+        sys.exit(1)
+    finally:
+        cur.close()
+        conn.close()
+
+    if not user_tpl:
+        return None
+    user_obj = tpl_to_user_obj(user_tpl)
+    return user_obj
+
+# try:
+#     conn = get_db1()
+#     cur = conn.cursor()
+# except mariadb.Error as e:
+#     print(f"Error connecting to mariadb platform: {e}")
+#     sys.exit(1)
+# finally:
+#     cur.close()
+#     conn.close()
+
+def get_by_email(email):
+    try:
+        conn = get_db1()
+        cur = conn.cursor()
+        query = "select * from account where email=?"
+        cur.execute(query, (email,))
+        user_tpl = cur.fetchone()
+    except mariadb.Error as e:
+        print(f"Error connecting to mariadb platform: {e}")
+        sys.exit(1)
+    finally:
+        cur.close()
+        conn.close()
+
+    if not user_tpl:
+        return None
+    user_obj = tpl_to_user_obj(user_tpl)
+    return user_obj
+
