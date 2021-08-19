@@ -5,6 +5,8 @@ class User:
     type = "normal"
 
     #overload, constructor, default values, *args, *kwargs
+    # def __init__(self, id=None, username='', email='', password=b'', fname='', lname='', dob=None):
+    #if you don't know the type use None, for everithing else use empty; '', 0, datetime.min, etc
     def __init__(self, id=0, username='', email='', password=b'', fname='', lname='', dob=datetime.min):
         #private attributes
         # self.__id = id

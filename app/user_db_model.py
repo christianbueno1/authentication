@@ -1,7 +1,7 @@
 # import mariadb
 # from flask import current_app, g
 from .user_model import User
-from .db_model import get_db, mariadb
+from .db_model import get_db, mariadb, get_db1
 # from app.user_model import User
 import sys
 
@@ -19,6 +19,7 @@ import sys
 #cur.fetchmany() #default 1 row
 #cur.fetchmany(5)
 
+#crud: create, retrieve, update, delete
 
 #from list of tuples, fetchall
 #to list of User class
@@ -45,6 +46,7 @@ def print_lst(user_lst):
         print(f"{user_obj}")
         print()
 
+#retrieve
 #return a list of user class
 #if doesn't find any return None
 def get_all_users():
@@ -71,6 +73,7 @@ def get_all_users():
         # conn.close()
         pass
 
+#retrieve
 #Return a User object, if doens't find one return None
 #when resulset is empty fetchone() return None
 def get_user(id):
@@ -98,7 +101,7 @@ def get_user(id):
         return user_obj
         
     except mariadb.Error as e:
-        print(f"Error connectting to mariadb platform: {e}")
+        print(f"Error connecting to mariadb platform: {e}")
         sys.exit(1)
     finally:
         #close connection
@@ -106,4 +109,40 @@ def get_user(id):
         # conn.close()
         pass
 
-    
+
+#create
+def insert_user(cur, user_obj):
+    try:
+        #use connection
+        # conn = get_db()
+        # cur = conn.cursor()
+
+        #spanning string over multiple lines
+        #triple quotes
+        #ignore end of lines with \
+        # query = """\
+        #     insert into account \
+        #     (username, email, password, fname, lname, dob) \
+        #     values \
+        #     (?,?,?,?,?,?)"""
+        query = "insert into account (username, email, password, fname, lname, dob) values (?,?,?,?,?,?)"
+        cur.execute(query, (user_obj.username, user_obj.email, user_obj.password, user_obj.fname, user_obj.lname, user_obj.dob))
+        
+
+    except mariadb.Error as e:
+        print(f"Error connecting to mariadb platform: {e}")
+        sys.exit(1)
+
+def insert_user2(user_obj):
+    try:
+        conn = get_db1()
+        cur = conn.cursor()
+        query = "insert into account (username, email, password, fname, lname, dob) values (?,?,?,?,?,?)"
+        cur.execute(query, (user_obj.username, user_obj.email, user_obj.password, user_obj.fname, user_obj.lname, user_obj.dob))
+        conn.commit()
+    except mariadb.Error as e:
+        print(f"Error connecting to mariadb platform: {e}")
+        sys.exit(1)
+    finally:
+        cur.close()
+        conn.close()

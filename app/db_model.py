@@ -7,7 +7,7 @@ from .user_model import User
 
 import sys
 
-
+#It is one option for connection to the database
 def get_db():
     if 'db' not in g:
         
@@ -24,6 +24,21 @@ def get_db():
         g.db = mariadb.connect(**database_credentials)
 
     return g.db
+
+#other way to connect to database
+def get_db1():
+    database_credentials = dict(
+        user=current_app.config['DATABASE_USER'],
+        host=current_app.config['DATABASE_HOST'],
+        port=current_app.config['DATABASE_PORT'],
+        password=current_app.config['DATABASE_PASSWORD'],
+        db=current_app.config['DATABASE_DB']
+    )
+    #unpack values from dictionary with **database_credentials
+    conn = mariadb.connect(**database_credentials)
+    return conn
+
+
 
 def close_db(e=None):
     db = g.pop('db', None)
