@@ -16,8 +16,8 @@ def create_app(test_config=None):
         return 'hello world'
     
     #register the database
-    from . import db_model
-    db_model.init_app(app)
+    # from . import db_model
+    # db_model.init_app(app)
 
     #apply the blueprints to the app
     from . import auth_controller
